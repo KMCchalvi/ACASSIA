@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACASSIA - INFINI ❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;800&display=swap');
+
+        :root {
+            --pink: #ff3385;
+            --gold: #ffd700;
+            --dark: #050005;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: var(--dark);
+            color: white; overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        canvas { position: fixed; top: 0; left: 0; z-index: 1; }
+
+        /* --- OVERLAY DE DÉPART --- */
+        #intro-overlay {
+            position: fixed; inset: 0; z-index: 100;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: radial-gradient(circle, #200020 0%, #050005 100%);
+            transition: opacity 1s ease;
+        }
+
+        .start-btn {
+            padding: 20px 40px; font-size: 1.5rem; background: none;
+            border: 2px solid var(--pink); color: var(--pink);
+            border-radius: 50px; cursor: pointer; font-weight: 800;
+            box-shadow: 0 0 20px var(--pink);
+            animation: pulse 2s infinite;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* --- DÉCOMPTE --- */
+        #countdown {
+            position: fixed; inset: 0; z-index: 50;
+            display: none; align-items: center; justify-content: center;
+            font-size: clamp(8rem, 30vw, 15rem); font-weight: 900; color: white;
+            text-shadow: 0 0 50px var(--pink);
+        }
+
+        /* --- FLASH BLANC --- */
+        #white-flash {
+            position: fixed; inset: 0; background: white; z-index: 60;
+            opacity: 0; pointer-events: none;
+        }
+
+        /* --- FINAL CONTAINER --- */
+        #final-content {
+            position: fixed; inset: 0; z-index: 10;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; background: radial-gradient(circle, #300015 0%, #050005 100%);
+            opacity: 0; transition: opacity 2s ease;
+            overflow-y: auto;
+        }
+
+        .hb-title {
+            font-weight: 800; font-size: clamp(1.8rem, 7vw, 3.5rem); margin-bottom: 5px;
+            background: linear-gradient(to right, #fff, var(--pink), var(--gold));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .acassia-name {
+            font-family: 'Great Vibes', cursive; font-size: clamp(3.5rem, 15vw, 6.5rem);
+            color: var(--gold); text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+            margin-bottom: 15px; animation: float 3s ease-in-out infinite;
+        }
+
+        .love-letter {
+            font-size: clamp(0.9rem, 3.8vw, 1.15rem); max-width: 500px; line-height: 1.6;
+            font-weight: 300; font-style: italic; padding: 0 25px; color: #ffdae9;
+        }
+
+        /* --- ZONE DE RÉPONSE --- */
+        .reply-container {
+            margin-top: 25px; z-index: 20; width: 85%; max-width: 350px;
+        }
+
+        #user-message {
+            width: 100%; padding: 12px; border-radius: 15px; border: 1px solid var(--pink);
+            background: rgba(255, 255, 255, 0.1); color: white;
+            font-family: 'Montserrat', sans-serif; margin-bottom: 15px;
+            outline: none; text-align: center; box-sizing: border-box;
+        }
+
+        .send-btn {
+            display: inline-block; padding: 12px 30px; background: var(--pink);
+            color: white; border: none; border-radius: 50px; font-weight: bold;
+            cursor: pointer; box-shadow: 0 0 15px var(--pink);
+            transition: 0.3s; font-family: 'Montserrat', sans-serif;
+        }
+
+        .send-btn span { color: white !important; margin-left: 8px; font-style: normal; }
+
+        .send-btn:hover { transform: scale(1.05); box-shadow: 0 0 25px var(--pink); }
+
+        /* --- ANIMATIONS --- */
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 10px var(--pink); }
+            50% { transform: scale(1.05); box-shadow: 0 0 30px var(--pink); }
+            100% { transform: scale(1); box-shadow: 0 0 10px var(--pink); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .shockwave {
+            position: fixed; border: 3px solid white; border-radius: 50%;
+            transform: translate(-50%, -50%); pointer-events: none;
+            animation: wave 0.8s ease-out forwards;
+        }
+
+        @keyframes wave { from { width: 0; height: 0; opacity: 1; } to { width: 200vw; height: 200vw; opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <div id="white-flash"></div>
+
+    <div id="intro-overlay">
+        <button class="start-btn" onclick="initExperience()">DÉCOUVRIR TON CADEAU</button>
+        <p style="margin-top: 20px; color: #888;">(Active le son de ton cœur)</p>
+    </div>
+
+    <canvas id="matrix"></canvas>
+    <div id="countdown"></div>
+
+    <div id="final-content">
+        <h2 class="hb-title">HAPPY BIRTHDAY</h2>
+        <h1 class="acassia-name">Acassia</h1>
+        <div class="love-letter">
+            Mon amour, chaque jour à tes côtés est un cadeau. <br>
+            Tu es ma lumière, ma force et mon plus beau sourire. <br>
+            Je t'aime plus que les mots ne peuvent l'exprimer. <br>
+            Aujourd'hui est ta journée, mais mon cœur t'appartient pour toujours. ❤️
+        </div>
+
+        <div class="reply-container">
+            <input type="text" id="user-message" placeholder="Écris-moi un petit mot ici...">
+            <button class="send-btn" onclick="sendToWhatsApp()">Répondre à ton amour <span>🤍</span></button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        const flash = document.getElementById('white-flash');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const chars = "ACASSIA❤01";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(5, 0, 5, 0.08)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ff3385';
+            ctx.font = fontSize + 'px monospace';
+            drops.forEach((y, i) => {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, y * fontSize);
+                if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            });
+            requestAnimationFrame(drawMatrix);
+        }
+
+        function createShockwave() {
+            const wave = document.createElement('div');
+            wave.className = 'shockwave';
+            wave.style.left = '50%'; wave.style.top = '50%';
+            document.body.appendChild(wave);
+            setTimeout(() => wave.remove(), 800);
+        }
+
+        function initExperience() {
+            document.getElementById('intro-overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('intro-overlay').style.display = 'none';
+                startSequence();
+            }, 1000);
+            drawMatrix();
+        }
+
+        function startSequence() {
+            const countEl = document.getElementById('countdown');
+            countEl.style.display = 'flex';
+            let timeLeft = 3;
+            const timer = setInterval(() => {
+                if (timeLeft > 0) { countEl.innerText = timeLeft; createShockwave(); }
+                if (timeLeft === 0) {
+                    clearInterval(timer);
+                    flash.style.opacity = '1';
+                    setTimeout(() => {
+                        countEl.style.display = 'none';
+                        showFinal();
+                        flash.style.opacity = '0';
+                        flash.style.transition = 'opacity 1.5s ease';
+                    }, 200);
+                }
+                timeLeft--;
+            }, 1000);
+        }
+
+        function showFinal() {
+            const final = document.getElementById('final-content');
+            final.style.display = 'flex';
+            setTimeout(() => final.style.opacity = '1', 100);
+            setInterval(createParticle, 100);
+        }
+
+        function sendToWhatsApp() {
+            const userText = document.getElementById('user-message').value;
+            const phoneNumber = "243992330201";
+            const defaultMsg = "Merci mon amour pour cette surprise ! Je t'aime ❤️";
+            const finalMsg = userText ? userText : defaultMsg;
+            const encodedMsg = encodeURIComponent(finalMsg);
+            window.open(`https://wa.me/${phoneNumber}?text=${encodedMsg}`, '_blank');
+        }
+
+        function createParticle() {
+            const p = document.createElement('div');
+            p.innerHTML = Math.random() > 0.5 ? '❤️' : '✨';
+            p.style.position = 'fixed';
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.top = '110vh';
+            p.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            p.style.zIndex = '15';
+            p.style.transition = `all ${Math.random() * 2 + 3}s linear`;
+            p.style.pointerEvents = 'none';
+            document.body.appendChild(p);
+            setTimeout(() => { p.style.top = '-10vh'; p.style.opacity = '0'; }, 100);
+            setTimeout(() => p.remove(), 5000);
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
